@@ -14,18 +14,14 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.utils import to_categorical
 
-# =====================================
-# Feature Extraction
-# =====================================
+# feature extraction
 
 def extract_mfcc(audio_path, n_mfcc=13):
     y, sr = librosa.load(audio_path, sr=16000)
     mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=n_mfcc)
     return np.mean(mfccs.T, axis=0)
 
-# =====================================
-# Load Dataset (ignores Test folder)
-# =====================================
+# loads dataset (all folders but test)
 
 def load_dataset(base_dir="."):
     X = []
@@ -61,9 +57,7 @@ X_train, X_test, y_train, y_test = train_test_split(
     random_state=42
 )
 
-# =====================================
-# Build Neural Network
-# =====================================
+# building neural network
 
 model = Sequential([
     Dense(128, activation="relu", input_shape=(X.shape[1],)),
@@ -92,9 +86,7 @@ history = model.fit(
 test_loss, test_accuracy = model.evaluate(X_test, y_test, verbose=0)
 overall_accuracy = test_accuracy * 100
 
-# =====================================
-# Prediction Function
-# =====================================
+# prediction function
 
 def predict_audio(audio_path):
     features = extract_mfcc(audio_path)
@@ -107,9 +99,7 @@ def predict_audio(audio_path):
 
     return predicted_label, confidence
 
-# =====================================
-# Tkinter App with Tabs
-# =====================================
+# tkinter interface
 
 root = tk.Tk()
 root.title("Accent Classification Neural Network")
@@ -118,9 +108,7 @@ root.geometry("900x600")
 notebook = ttk.Notebook(root)
 notebook.pack(fill="both", expand=True)
 
-# -------------------------------------
-# TAB 1: Accuracy Graph
-# -------------------------------------
+# tkinter accuracy graph
 
 accuracy_tab = ttk.Frame(notebook)
 notebook.add(accuracy_tab, text="Accuracy")
@@ -137,9 +125,7 @@ canvas1 = FigureCanvasTkAgg(fig1, master=accuracy_tab)
 canvas1.draw()
 canvas1.get_tk_widget().pack(fill="both", expand=True)
 
-# -------------------------------------
-# TAB 2: Loss Graph
-# -------------------------------------
+# tkinter loss graph
 
 loss_tab = ttk.Frame(notebook)
 notebook.add(loss_tab, text="Loss")
@@ -156,9 +142,7 @@ canvas2 = FigureCanvasTkAgg(fig2, master=loss_tab)
 canvas2.draw()
 canvas2.get_tk_widget().pack(fill="both", expand=True)
 
-# -------------------------------------
-# TAB 3: Audio Prediction
-# -------------------------------------
+# tkinter audio prediction
 
 prediction_tab = ttk.Frame(notebook)
 notebook.add(prediction_tab, text="Audio Prediction")
